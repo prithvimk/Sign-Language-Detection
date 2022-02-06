@@ -26,7 +26,7 @@ Currently, only dataset creation has been implemented ([save_gestures.py](save_g
 9. Press 'C' to start recording a new gesture or press 'Q' to terminate the program.
 
 ## **To-Do**
----
+
 1. Study more about ISL and decide what changes need to be made.
 2. Test out different machine learning models and architectures.
 3. Work on deployment.
