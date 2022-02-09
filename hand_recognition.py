@@ -1,8 +1,5 @@
-from unittest import result
 import cv2
-import tensorflow as tf
 import mediapipe as mp
-import numpy as np
 
 # initializing mediapipe
 mpHands = mp.solutions.hands    # this performs the hand recognition
