@@ -50,7 +50,7 @@ while True:
     if start_capture_flag == True:
         frames += 1
     if img_no == TOTAL_DATAPOINTS:
-        gesture_data = landmarks
+        gesture_data += landmarks
 
         landmarks = []
         start_capture_flag = False
