@@ -21,6 +21,8 @@ img_no = 0
 TOTAL_DATAPOINTS = 50
 frames = 0
 gesture_name = ''
+handpoints = ['HandLandmark.WRIST_lmx', 'HandLandmark.WRIST_lmy', 'HandLandmark.THUMB_CMC_lmx', 'HandLandmark.THUMB_CMC_lmy', 'HandLandmark.THUMB_MCP_lmx', 'HandLandmark.THUMB_MCP_lmy', 'HandLandmark.THUMB_IP_lmx', 'HandLandmark.THUMB_IP_lmy', 'HandLandmark.THUMB_TIP_lmx', 'HandLandmark.THUMB_TIP_lmy', 'HandLandmark.INDEX_FINGER_MCP_lmx', 'HandLandmark.INDEX_FINGER_MCP_lmy', 'HandLandmark.INDEX_FINGER_PIP_lmx', 'HandLandmark.INDEX_FINGER_PIP_lmy', 'HandLandmark.INDEX_FINGER_DIP_lmx', 'HandLandmark.INDEX_FINGER_DIP_lmy', 'HandLandmark.INDEX_FINGER_TIP_lmx', 'HandLandmark.INDEX_FINGER_TIP_lmy', 'HandLandmark.MIDDLE_FINGER_MCP_lmx', 'HandLandmark.MIDDLE_FINGER_MCP_lmy', 'HandLandmark.MIDDLE_FINGER_PIP_lmx',
+             'HandLandmark.MIDDLE_FINGER_PIP_lmy', 'HandLandmark.MIDDLE_FINGER_DIP_lmx', 'HandLandmark.MIDDLE_FINGER_DIP_lmy', 'HandLandmark.MIDDLE_FINGER_TIP_lmx', 'HandLandmark.MIDDLE_FINGER_TIP_lmy', 'HandLandmark.RING_FINGER_MCP_lmx', 'HandLandmark.RING_FINGER_MCP_lmy', 'HandLandmark.RING_FINGER_PIP_lmx', 'HandLandmark.RING_FINGER_PIP_lmy', 'HandLandmark.RING_FINGER_DIP_lmx', 'HandLandmark.RING_FINGER_DIP_lmy', 'HandLandmark.RING_FINGER_TIP_lmx', 'HandLandmark.RING_FINGER_TIP_lmy', 'HandLandmark.PINKY_MCP_lmx', 'HandLandmark.PINKY_MCP_lmy', 'HandLandmark.PINKY_PIP_lmx', 'HandLandmark.PINKY_PIP_lmy', 'HandLandmark.PINKY_DIP_lmx', 'HandLandmark.PINKY_DIP_lmy', 'HandLandmark.PINKY_TIP_lmx', 'HandLandmark.PINKY_TIP_lmy']
 landmarks = []
 gesture_data = []
 
@@ -48,7 +50,7 @@ while True:
     if start_capture_flag == True:
         frames += 1
     if img_no == TOTAL_DATAPOINTS:
-        gesture_data += landmarks
+        gesture_data = landmarks
 
         landmarks = []
         start_capture_flag = False
@@ -64,11 +66,13 @@ while True:
 
             if frames > 50:
                 img_no += 1
+                lmks = []
                 for point, lm in zip(mpHands.HandLandmark, handslms.landmark):
                     lmx = int(lm.x * x)
                     lmy = int(lm.y * y)
 
-                    landmarks.append([str(point), lmx, lmy, gesture_name])
+                    lmks += [lmx, lmy]
+                landmarks.append(lmks + [gesture_name])
 
                 cv2.putText(frame, "Capturing...", (30, 60),
                             cv2.FONT_HERSHEY_TRIPLEX, 2, (127, 255, 255))
@@ -80,7 +84,6 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-
-df = pd.DataFrame(gesture_data, columns=[
-    'hand_landmark', 'lmx', 'lmy', 'gesture'])
+handpoints.append('gesture_name')
+df = pd.DataFrame(gesture_data, columns=handpoints)
 df.to_csv('gestures.csv', index=False)
