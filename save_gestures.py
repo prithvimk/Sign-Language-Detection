@@ -2,13 +2,24 @@ import os
 import pandas as pd
 import cv2
 import mediapipe as mp
+import argparse
+
+
 
 GESTURES_PATH = 'gestures.csv'
 start_capture_flag = False
 stop_execution_flag = False
 
-if os.path.exists(GESTURES_PATH):
-    os.remove(GESTURES_PATH)
+parser = argparse.ArgumentParser(
+    description='Save gesture keypoints in gestures.csv')
+parser.add_argument('-n', '--new', action='store_true',
+                    help='Overwrite the previously collected data.')
+
+args = parser.parse_args()
+
+if args.new:
+    if os.path.exists(GESTURES_PATH):
+        os.remove(GESTURES_PATH)
 
 mpHands = mp.solutions.hands    # this performs the hand recognition
 # this line configures the model
@@ -22,7 +33,7 @@ TOTAL_DATAPOINTS = 50
 frames = 0
 gesture_name = ''
 handpoints = ['HandLandmark.WRIST_lmx', 'HandLandmark.WRIST_lmy', 'HandLandmark.THUMB_CMC_lmx', 'HandLandmark.THUMB_CMC_lmy', 'HandLandmark.THUMB_MCP_lmx', 'HandLandmark.THUMB_MCP_lmy', 'HandLandmark.THUMB_IP_lmx', 'HandLandmark.THUMB_IP_lmy', 'HandLandmark.THUMB_TIP_lmx', 'HandLandmark.THUMB_TIP_lmy', 'HandLandmark.INDEX_FINGER_MCP_lmx', 'HandLandmark.INDEX_FINGER_MCP_lmy', 'HandLandmark.INDEX_FINGER_PIP_lmx', 'HandLandmark.INDEX_FINGER_PIP_lmy', 'HandLandmark.INDEX_FINGER_DIP_lmx', 'HandLandmark.INDEX_FINGER_DIP_lmy', 'HandLandmark.INDEX_FINGER_TIP_lmx', 'HandLandmark.INDEX_FINGER_TIP_lmy', 'HandLandmark.MIDDLE_FINGER_MCP_lmx', 'HandLandmark.MIDDLE_FINGER_MCP_lmy', 'HandLandmark.MIDDLE_FINGER_PIP_lmx',
-             'HandLandmark.MIDDLE_FINGER_PIP_lmy', 'HandLandmark.MIDDLE_FINGER_DIP_lmx', 'HandLandmark.MIDDLE_FINGER_DIP_lmy', 'HandLandmark.MIDDLE_FINGER_TIP_lmx', 'HandLandmark.MIDDLE_FINGER_TIP_lmy', 'HandLandmark.RING_FINGER_MCP_lmx', 'HandLandmark.RING_FINGER_MCP_lmy', 'HandLandmark.RING_FINGER_PIP_lmx', 'HandLandmark.RING_FINGER_PIP_lmy', 'HandLandmark.RING_FINGER_DIP_lmx', 'HandLandmark.RING_FINGER_DIP_lmy', 'HandLandmark.RING_FINGER_TIP_lmx', 'HandLandmark.RING_FINGER_TIP_lmy', 'HandLandmark.PINKY_MCP_lmx', 'HandLandmark.PINKY_MCP_lmy', 'HandLandmark.PINKY_PIP_lmx', 'HandLandmark.PINKY_PIP_lmy', 'HandLandmark.PINKY_DIP_lmx', 'HandLandmark.PINKY_DIP_lmy', 'HandLandmark.PINKY_TIP_lmx', 'HandLandmark.PINKY_TIP_lmy']
+              'HandLandmark.MIDDLE_FINGER_PIP_lmy', 'HandLandmark.MIDDLE_FINGER_DIP_lmx', 'HandLandmark.MIDDLE_FINGER_DIP_lmy', 'HandLandmark.MIDDLE_FINGER_TIP_lmx', 'HandLandmark.MIDDLE_FINGER_TIP_lmy', 'HandLandmark.RING_FINGER_MCP_lmx', 'HandLandmark.RING_FINGER_MCP_lmy', 'HandLandmark.RING_FINGER_PIP_lmx', 'HandLandmark.RING_FINGER_PIP_lmy', 'HandLandmark.RING_FINGER_DIP_lmx', 'HandLandmark.RING_FINGER_DIP_lmy', 'HandLandmark.RING_FINGER_TIP_lmx', 'HandLandmark.RING_FINGER_TIP_lmy', 'HandLandmark.PINKY_MCP_lmx', 'HandLandmark.PINKY_MCP_lmy', 'HandLandmark.PINKY_PIP_lmx', 'HandLandmark.PINKY_PIP_lmy', 'HandLandmark.PINKY_DIP_lmx', 'HandLandmark.PINKY_DIP_lmy', 'HandLandmark.PINKY_TIP_lmx', 'HandLandmark.PINKY_TIP_lmy']
 landmarks = []
 gesture_data = []
 
@@ -86,4 +97,8 @@ cap.release()
 cv2.destroyAllWindows()
 handpoints.append('gesture_name')
 df = pd.DataFrame(gesture_data, columns=handpoints)
-df.to_csv('gestures.csv', index=False)
+
+try:
+    df = pd.concat([df, pd.read_csv(GESTURES_PATH)])
+finally:
+    df.to_csv(GESTURES_PATH, index=False)
