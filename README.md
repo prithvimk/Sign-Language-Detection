@@ -19,11 +19,13 @@ Currently, only dataset creation has been implemented ([save_gestures.py](save_g
 2. Run: ```pip install -r requirements.txt```
 3. To just play around with the hand detection, run [hand_recognition.py](hand_recognition.py)
 4. To start creating the dataset, run [save_gestures.py](save_gestures.py)
+   
+   To overwrite old data, run: ```python save_gestures.py --new```. If you already have a ```gestures.csv``` file in the working directory, then new data will be added to that file by default.
 5. Press 'C' on your keyboard to start capturing the gesture. 
 6. Enter the name of the gesture in the terminal.
 7. Raise your hand in front of the camera while making the gesture and it will automatically start capturing pixel coordinates of the landmarks that are being detected.
 8. After number of datapoints recorded equals ```   TOTAL_DATAPOINTS```, code will stop capturing.
-9. Press 'C' to start recording a new gesture or press 'Q' to terminate the program.
+9.  Press 'C' to start recording a new gesture or press 'Q' to terminate the program.
 
 ## **To-Do**
 
